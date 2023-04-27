@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	Create(customers *domain.Customers) (int64, error)
 	ReadAll() ([]*domain.Customers, error)
+	Update(id int64, total float64) error
 }
 
 type repository struct {
@@ -49,4 +50,10 @@ func (r *repository) ReadAll() ([]*domain.Customers, error) {
 		customers = append(customers, &customer)
 	}
 	return customers, nil
+}
+
+func (r *repository) Update(id int64, total float64) error {
+	query := `UPDATE invoices SET total = ? WHERE id = ?`
+	_, err := r.db.Exec(query, total, id)
+	return err
 }
